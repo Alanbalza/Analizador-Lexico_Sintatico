@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizador Léxico, Sintáctico</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Analizador Léxico, Sintáctico</h1>
+        <form id="analyzer-form">
+            <textarea name="code" id="code" rows="10" cols="50"></textarea><br>
+            <button type="submit">Analizar</button>
+        </form>
+        <h2>Análisis Léxico</h2>
+        <pre id="lexical-analysis"></pre>
+        <h2>Análisis Sintáctico</h2>
+        <pre id="syntactic-analysis"></pre>
+    </div>
+
+    <script>
+        document.getElementById('analyzer-form').onsubmit = function(event) {
+            event.preventDefault();
+            var code = document.getElementById('code').value;
+            
+            fetch('/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'code=' + encodeURIComponent(code)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('lexical-analysis').innerText = data.tokens.join('\n');
+                document.getElementById('syntactic-analysis').innerText = data.syntax_result;
+            });
+        }
+    </script>
+</body>
+</html>
